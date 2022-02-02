@@ -7,14 +7,8 @@ const User = require("../models/User");
 // @route post /user
 router.post("/user", async (req, res) => {
   try {
-    const { first_name, last_name, username, date_of_birth } = req.body;
+    var { first_name, last_name, username, date_of_birth } = req.body;
     let errors = [];
-    //Safe check for empty inputs
-    // first_name = first_name.trim();
-    // last_name = last_name.trim();
-    // username = username.trim();
-    // date_of_birth = date_of_birth.trim();
-
     // Check required fields
     if (!first_name || !username || !date_of_birth) {
       errors.push({ msg: "Please fill in required fields." });
@@ -43,12 +37,14 @@ router.post("/user", async (req, res) => {
           date_of_birth,
         });
       } else {
-        if (last_name == undefined) {
+          console.log(last_name);
+        if (typeof last_name === "undefined") {
           var name_prefix = first_name.charAt(0).toUpperCase();
-        }
-        name_prefix =
+        }else {
+        var name_prefix =
           first_name.charAt(0).toUpperCase() +
           last_name.charAt(0).toUpperCase();
+        }
         const newUser = new User({
           first_name,
           last_name,
@@ -68,8 +64,8 @@ router.post("/user", async (req, res) => {
       }
     }
   } catch (err) {
-    console.error(err);
-    res.render("error/500");
+      console.error(err);
+    res.status(500).send("Server Error");
   }
 });
 
@@ -82,8 +78,8 @@ router.get("/users", async (req, res) => {
       res.json(users);
     // }).lean();
   } catch (err) {
-    console.error(err);
-    res.render("/error/500");
+      console.error(err);
+    res.status(500).send("Server Error");
   }
 });
 
@@ -93,12 +89,10 @@ router.delete("/:username", async (req, res) => {
 	try {
         var { username } = req.params;
 		await User.findOneAndDelete({ username: username });
-		// req.flash("success_msg", "You deleted the user successfully!");
-        console.log("got deleted");
 		res.json({message: "You deleted the user successfully."});
 	} catch (err) {
 		console.error(err);
-		return res.render("/error/500");
+		res.status(500).send("Server Error");
 	}
 });
 
