@@ -24,7 +24,7 @@ if (process.env.NODE_ENV === "development") {
 app.use(express.static(path.join(__dirname, "public")));
 
 // Routes
-app.use("/", require("./routes/api"));
+app.use("/api", require("./routes/api"));
 // app.use("/manageuser", require("./routes/manageuser"));
 // app.use("/dashboard", require("./routes/dashboard"));
 

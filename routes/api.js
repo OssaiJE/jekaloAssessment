@@ -43,7 +43,7 @@ router.post("/user", async (req, res) => {
           date_of_birth,
         });
       } else {
-        if (!last_name) {
+        if (last_name == undefined) {
           var name_prefix = first_name.charAt(0).toUpperCase();
         }
         name_prefix =
@@ -59,11 +59,11 @@ router.post("/user", async (req, res) => {
 
         await newUser.save();
         res.json({
+          name_prefix,
           first_name,
           last_name,
           username,
           date_of_birth,
-          name_prefix,
         });
       }
     }
@@ -86,5 +86,21 @@ router.get("/users", async (req, res) => {
     res.render("/error/500");
   }
 });
+
+// @desc Delete User
+// @route DELETE /:username
+router.delete("/:username", async (req, res) => {
+	try {
+        var { username } = req.params;
+		await User.findOneAndDelete({ username: username });
+		// req.flash("success_msg", "You deleted the user successfully!");
+        console.log("got deleted");
+		res.json({message: "You deleted the user successfully."});
+	} catch (err) {
+		console.error(err);
+		return res.render("/error/500");
+	}
+});
+
 
 module.exports = router;
